@@ -78,7 +78,8 @@ colorscheme nord
 let g:deoplete#enable_at_startup = 1
 
 " Go Settings
-let g:go_auto_type_info = 1
+let g:go_auto_type_info = 1        " Show type information on hover.
+let g:go_fmt_command = "goimports" " Run GoImports on save.
 
 " Do stuff on save
 if has("autocmd")

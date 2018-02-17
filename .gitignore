@@ -1,0 +1,11 @@
+nvim/autoload/*
+nvim/colors/*
+nvim/.netrwhist
+yarn/*
+xbuild/*
+NuGet/*
+configstore/*
+gcloud/*
+stetic/*
+micro/*
+
