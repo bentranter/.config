@@ -36,6 +36,33 @@ set scrolloff=3              " Show 3 lines of context around the cursor.
 set title                    " Set the window title
 set background=dark          " Dark alert
 
+" Stuff from 'How To Do 90% Of What Plugins Do (With Just Vim)'
+" https://www.youtube.com/watch?v=XA2WjJbmmoM
+
+" Search down into subfolders. Also provides tab completion for file related
+" tasks.
+"
+" The line below ignores the awful `node_modules` folder in finding.
+set path+=**
+set wildignore+=**/node_modules/**
+
+" Display all matching files when we tab complete. This also applies to any
+" open buffer -- press `:b` to do this.
+set wildmenu
+
+" Use ag to search if it's installed.
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+
+
 " Use tab for autocompletion
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
@@ -54,7 +81,7 @@ augroup file_mappings
     autocmd!
     autocmd FileType html,css,js,json,viml setlocal expandtab shiftwidth=2 tabstop=2
     autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
-    autocmd FileType c setlocal noexpandtab tabstop=4 shiftwidth=4
+    autocmd FileType c,cpp,cc,h setlocal noexpandtab tabstop=4 shiftwidth=4
 
     autocmd FileType qf wincmd J " put quickfix window always to the bottom
 augroup END
