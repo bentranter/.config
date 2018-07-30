@@ -69,7 +69,7 @@ inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 set pumheight=10             " Completion window max size
 
 " vim-gitgutter
-let g:gitgutter_sign_column_always = 1
+set signcolumn=yes
 
 "http://stackoverflow.com/questions/20186975/vim-mac-how-to-copy-to-clipboard-without-pbcopy
 set clipboard^=unnamed
@@ -99,7 +99,7 @@ if (has("termguicolors"))
 endif
 syntax enable
 set t_Co=256
-colorscheme nord
+colorscheme base16-tomorrow-night
 
 " Plugins
 let g:deoplete#enable_at_startup = 1
