@@ -1,15 +1,25 @@
 " Plugins
 call plug#begin('~/.config/nvim/autoload')
-Plug 'arcticicestudio/nord-vim'
+" Global editor plugins.
 Plug 'Raimondi/delimitMate'
 Plug 'alvan/vim-closetag'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'fatih/vim-go'
 Plug 'Shougo/deoplete.nvim'
-Plug 'zchee/deoplete-go', { 'do': 'make'}
 Plug 'airblade/vim-gitgutter'
 Plug 'ap/vim-buftabline'
 Plug 'neomake/neomake'
+Plug 'tpope/vim-commentary'
+Plug 'junegunn/seoul256.vim'
+Plug 'dracula/vim'
+
+" Go plugins.
+Plug 'fatih/vim-go'
+Plug 'zchee/deoplete-go', { 'do': 'make'}
+
+" Ruby + Rails plugins.
+Plug 'vim-ruby/vim-ruby'
+Plug 'tpope/vim-rails'
+
 call plug#end()
 
 set noerrorbells             " No beeps
@@ -62,6 +72,8 @@ if executable('ag')
   let g:ctrlp_use_caching = 0
 endif
 
+" Spell stuff correctly.
+set spell spelllang=en_ca
 
 " Use tab for autocompletion
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -79,12 +91,15 @@ set lazyredraw          " Wait to redraw
 
 augroup file_mappings
     autocmd!
-    autocmd FileType html,css,js,json,viml setlocal expandtab shiftwidth=2 tabstop=2
-    autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
+
+    " Filetypes where we indent by two spaces
+    autocmd FileType html,css,js,json,viml,vim,ruby,eruby,erb setlocal expandtab shiftwidth=2 tabstop=2
     autocmd FileType c,cpp,cc,h setlocal noexpandtab tabstop=4 shiftwidth=4
 
+    autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
+
     autocmd FileType qf wincmd J " put quickfix window always to the bottom
-augroup END
+  augroup END
 
 " http://stackoverflow.com/questions/99161/how-do-you-make-vim-unhighlight-what-you-searched-for
 " <Ctrl-l> redraws the screen and removes any search highlighting.
@@ -99,7 +114,7 @@ if (has("termguicolors"))
 endif
 syntax enable
 set t_Co=256
-colorscheme base16-tomorrow-night
+colorscheme dracula
 
 " Plugins
 let g:deoplete#enable_at_startup = 1
@@ -107,6 +122,10 @@ let g:deoplete#enable_at_startup = 1
 " Go Settings
 let g:go_auto_type_info = 1        " Show type information on hover.
 let g:go_fmt_command = "goimports" " Run GoImports on save.
+
+" Ruby Settings
+let g:rubycomplete_buffer_loading = 1
+let g:rubycomplete_rails = 1
 
 " Do stuff on save
 if has("autocmd")
