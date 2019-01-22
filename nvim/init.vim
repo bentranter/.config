@@ -10,7 +10,7 @@ Plug 'ap/vim-buftabline'
 Plug 'neomake/neomake'
 Plug 'tpope/vim-commentary'
 Plug 'junegunn/seoul256.vim'
-Plug 'dracula/vim'
+Plug 'iCyMind/NeoSolarized'
 
 " Go plugins.
 Plug 'fatih/vim-go'
@@ -42,9 +42,9 @@ set nocursorline
 set updatetime=400
 set laststatus=2             " Always show a status line.
 set wrap                     " Turn on line wrapping.
-set scrolloff=3              " Show 3 lines of context around the cursor.
+set scrolloff=5              " Show 3 lines of context around the cursor.
 set title                    " Set the window title
-set background=dark          " Dark alert
+set background=light         " Dark alert
 
 " Stuff from 'How To Do 90% Of What Plugins Do (With Just Vim)'
 " https://www.youtube.com/watch?v=XA2WjJbmmoM
@@ -73,7 +73,7 @@ if executable('ag')
 endif
 
 " Spell stuff correctly.
-set spell spelllang=en_ca
+set spelllang=en_ca
 
 " Use tab for autocompletion
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -114,7 +114,7 @@ if (has("termguicolors"))
 endif
 syntax enable
 set t_Co=256
-colorscheme dracula
+colorscheme NeoSolarized
 
 " Plugins
 let g:deoplete#enable_at_startup = 1
