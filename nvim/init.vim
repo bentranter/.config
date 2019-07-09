@@ -21,7 +21,7 @@ endif
 
 " Create directories for Vim plug-ins.
 call plug#begin('~/.vim/plugged')
-  if has('nvim')
+  if has("nvim")
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
   else
     Plug 'Shougo/deoplete.nvim'
@@ -81,82 +81,6 @@ let g:delimitMate_expand_space=1
 let g:delimitMate_smart_quotes=1
 let g:delimitMate_expand_inside_quotes=0
 let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
-
-" Remappings.
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
-map <C-n> :NERDTreeToggle<CR>
-" Use modern Vim.
-set nocompatible
-
-" Ensure utf-8 encoding as some plugins depend on it.
-set encoding=utf-8
-
-" Download vim-plug if it isn't installed.
-if empty(glob("~/.vim/autoload/plug.vim"))
-  silent! execute '!curl --create-dirs -fsSLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * silent! PlugInstall --sync | source $MYVIMRC
-endif
-
-" Create directories for Vim plug-ins.
-call plug#begin('~/.vim/plugged')
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-  Plug 'morhetz/gruvbox'
-  Plug 'neomake/neomake'
-  Plug 'Raimondi/delimitMate'
-  Plug 'scrooloose/nerdtree'
-  Plug 'Shougo/deoplete.nvim'
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-  Plug 'tpope/vim-commentary'
-call plug#end()
-
-" General Vim configuration.
-syntax on
-filetype indent on
-
-set noerrorbells             " No beeps
-set number                   " Show line numbers
-set showcmd                  " Show me what I'm typing
-set noswapfile               " Don't use swapfile
-set nobackup                 " Don't create annoying backup files
-set splitright               " Split vertical windows right to the current windows
-set splitbelow               " Split horizontal windows below to the current windows
-set autowrite                " Automatically save before :next, :make etc.
-set hidden
-set fileformats=unix,dos,mac " Prefer Unix over Windows over OS 9 formats
-set noshowmatch              " Do not show matching brackets by flickering
-set noshowmode               " We show the mode with airline or lightline
-set ignorecase               " Search case insensitive...
-set smartcase                " ... but not it begins with upper case
-set completeopt=menu,menuone
-set nocursorcolumn           " speed up syntax highlighting
-set nocursorline
-set updatetime=400
-set wrap                     " Turn on line wrapping.
-set scrolloff=5              " Show 5 lines of context around the cursor.
-set title                    " Set the window title
-set backspace=indent,eol,start " Make backspacing work.
-
-" Global settings.
-set spelllang=en_ca
-set clipboard^=unnamed
-set clipboard^=unnamedplus
-colorscheme gruvbox
-set pumheight=10 " Completion window max size.
-set signcolumn=yes " vim-gitgutter requires this so it can draw the git status left of the line numbers.
-
-" Global plugin settings.
-let g:deoplete#enable_at_startup=1 " Always use deoplete.
-call deoplete#custom#option('omni_patterns', {
-\ 'go': '[^. *\t]\.\w*',
-\}) " Make deoplete use gopls.
-let g:delimitMate_expand_cr=1
-let g:delimitMate_expand_space=1
-let g:delimitMate_smart_quotes=1
-let g:delimitMate_expand_inside_quotes=0
-let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
-let g:go_auto_type_info = 1 " Show Go type information on hover.
-let g:go_fmt_command = "goimports" " Run GoImports on save
 
 " Remappings.
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
