@@ -2,7 +2,9 @@
 
 Config for Vim8 and/or Neovim.
 
-![terminal screenshot](screenshot.png "Screenshot of terminal")
+<p align="center">
+  <img src="screenshot.png" alt="Screenshot of terminal" title="Screenshot of terminal">
+</p>
 
 ### Installation
 
