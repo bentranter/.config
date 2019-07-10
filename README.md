@@ -1,7 +1,9 @@
-# Config
+# dotfiles
 
-Every editor is slow, but Neovim is the least slow.
+Config for Vim8 and/or Neovim.
+
+![terminal screenshot]("screenshot.png" "Screenshot of terminal")
 
 ### Installation
 
-To install these, you'll need [Neovim](https://neovim.io/) installed on your machine with Python 3 support. After that, start NeoVim and run `:PlugInstall`.
+To install these, you'll need either [Neovim](https://neovim.io/) or Vim8 installed on your machine with Python 3 support. After that, start Vim and run `:PlugInstall`.
