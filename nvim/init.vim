@@ -83,6 +83,7 @@ let g:delimitMate_expand_inside_quotes=0
 let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
 let g:go_fmt_command = "goimports" " Run GoImports on save.
 let g:go_auto_type_info = 1        " Show type info for symbol under cursor.
+let NERDTreeShowHidden = 1         " Show dotfiles in NERDTree.
 
 " Remappings.
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -103,5 +104,8 @@ augroup file_mappings
   autocmd FileType qf wincmd J " put quickfix window always to the bottom
   " Remove white space on save. Doesn't save cursor position
   autocmd BufWritePre * :%s/\s\+$//e
+
+  " Close Vim if NERDTree is the only remaining buffer.
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 augroup END
 
