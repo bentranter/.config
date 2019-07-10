@@ -11,3 +11,4 @@ gcloud/*
 stetic/*
 micro/*
 .isolated-storage/*
+doctl/*
