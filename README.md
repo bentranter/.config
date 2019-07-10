@@ -2,7 +2,7 @@
 
 Config for Vim8 and/or Neovim.
 
-![terminal screenshot]("screenshot.png" "Screenshot of terminal")
+![terminal screenshot]("https://github.com/bentranter/.config/blob/master/screenshot.png" "Screenshot of terminal")
 
 ### Installation
 
