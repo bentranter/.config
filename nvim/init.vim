@@ -81,10 +81,14 @@ let g:delimitMate_expand_space=1
 let g:delimitMate_smart_quotes=1
 let g:delimitMate_expand_inside_quotes=0
 let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
+let g:go_fmt_command = "goimports" " Run GoImports on save.
+let g:go_auto_type_info = 1        " Show type info for symbol under cursor.
 
 " Remappings.
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 map <C-n> :NERDTreeToggle<CR>
+" Don't show stupid q: window.
+map q: :q
 
 " Autocommands, most for setting indentation defaults.
 augroup file_mappings
@@ -97,10 +101,7 @@ augroup file_mappings
   autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
 
   autocmd FileType qf wincmd J " put quickfix window always to the bottom
-    " Remove white space on save. Doesn't save cursor position
+  " Remove white space on save. Doesn't save cursor position
   autocmd BufWritePre * :%s/\s\+$//e
-
-  " Run Neomake
-  autocmd! BufWritePost * Neomake
 augroup END
 
