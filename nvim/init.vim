@@ -31,10 +31,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'airblade/vim-gitgutter'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'morhetz/gruvbox'
+  Plug 'neomake/neomake'
   Plug 'Raimondi/delimitMate'
   Plug 'scrooloose/nerdtree'
   Plug 'tpope/vim-commentary'
-  Plug 'w0rp/ale'
 call plug#end()
 
 " General Vim configuration.
@@ -85,6 +85,7 @@ let g:delimitMate_expand_inside_quotes=0
 let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
 let g:go_fmt_command = "goimports" " Run GoImports on save.
 let g:go_auto_type_info = 1        " Show type info for symbol under cursor.
+let g:go_fmt_fail_silently = 1     " Don't open the quickfix window.
 let NERDTreeShowHidden = 1         " Show dotfiles in NERDTree.
 
 " Remappings.
@@ -109,5 +110,8 @@ augroup file_mappings
 
   " Close Vim if NERDTree is the only remaining buffer.
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+  " Run Neomake on save.
+  autocmd! BufWritePost * Neomake
 augroup END
 
