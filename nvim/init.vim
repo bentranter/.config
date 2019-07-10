@@ -70,8 +70,8 @@ set spelllang=en_ca
 set clipboard^=unnamed
 set clipboard^=unnamedplus
 colorscheme gruvbox
-set pumheight = 10   " Completion window max size.
-set signcolumn = yes " Keep this open since gitgutter puts stuff there.
+set pumheight=10   " Completion window max size.
+set signcolumn=yes " Keep this open since gitgutter puts stuff there.
 
 " Global plugin settings.
 let g:deoplete#enable_at_startup=1 " Always use deoplete.
