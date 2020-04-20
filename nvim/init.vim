@@ -21,17 +21,11 @@ endif
 
 " Create directories for Vim plug-ins.
 call plug#begin('~/.vim/plugged')
-  if has("nvim")
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-  else
-    Plug 'Shougo/deoplete.nvim'
-    Plug 'roxma/nvim-yarp'
-    Plug 'roxma/vim-hug-neovim-rpc'
-  endif
   Plug 'airblade/vim-gitgutter'
   Plug 'ctrlpvim/ctrlp.vim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'morhetz/gruvbox'
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'neomake/neomake'
   Plug 'Raimondi/delimitMate'
   Plug 'rhysd/vim-crystal'
@@ -76,22 +70,34 @@ set pumheight=10   " Completion window max size.
 set signcolumn=yes " Keep this open since gitgutter puts stuff there.
 
 " Global plugin settings.
-let g:deoplete#enable_at_startup=1 " Always use deoplete.
-call deoplete#custom#option('omni_patterns', {
-\ 'go': '[^. *\t]\.\w*',
-\}) " Make deoplete use gopls.
 let g:delimitMate_expand_cr=1
 let g:delimitMate_expand_space=1
 let g:delimitMate_smart_quotes=1
 let g:delimitMate_expand_inside_quotes=0
 let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
 
+" Use K to show documentation in preview window.
+"
+" This is for COC.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
 let g:go_fmt_command = "goimports" " Run GoImports on save.
 let g:go_auto_type_info = 1        " Show type info for symbol under cursor.
 let g:go_fmt_fail_silently = 1     " Don't open the quickfix window.
+
 let NERDTreeShowHidden = 1         " Show dotfiles in NERDTree.
 
 " Remappings.
+"
+" Use TAB for autocompletion.
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 map <C-n> :NERDTreeToggle<CR>
 " Don't show stupid q: window.
