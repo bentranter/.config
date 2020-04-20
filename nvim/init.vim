@@ -29,11 +29,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'roxma/vim-hug-neovim-rpc'
   endif
   Plug 'airblade/vim-gitgutter'
+  Plug 'ctrlpvim/ctrlp.vim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'morhetz/gruvbox'
   Plug 'neomake/neomake'
   Plug 'Raimondi/delimitMate'
-  Plug 'scrooloose/nerdtree'
+  Plug 'rhysd/vim-crystal'
+  Plug 'preservim/nerdtree'
   Plug 'tpope/vim-commentary'
 call plug#end()
 
@@ -83,6 +85,7 @@ let g:delimitMate_expand_space=1
 let g:delimitMate_smart_quotes=1
 let g:delimitMate_expand_inside_quotes=0
 let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
+
 let g:go_fmt_command = "goimports" " Run GoImports on save.
 let g:go_auto_type_info = 1        " Show type info for symbol under cursor.
 let g:go_fmt_fail_silently = 1     " Don't open the quickfix window.
@@ -93,6 +96,8 @@ inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 map <C-n> :NERDTreeToggle<CR>
 " Don't show stupid q: window.
 map q: :q
+" Clear search highlighting after hitting escape.
+nnoremap <esc> :noh<return><esc>
 
 " Autocommands, most for setting indentation defaults.
 augroup file_mappings
