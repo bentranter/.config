@@ -25,12 +25,16 @@ call plug#begin('~/.vim/plugged')
   Plug 'ctrlpvim/ctrlp.vim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
   Plug 'morhetz/gruvbox'
+  Plug 'jnurmine/Zenburn'
+  Plug 'dracula/vim'
+  Plug 'mhartington/oceanic-next'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'neomake/neomake'
   Plug 'Raimondi/delimitMate'
   Plug 'rhysd/vim-crystal'
   Plug 'preservim/nerdtree'
   Plug 'tpope/vim-commentary'
+  Plug 'ziglang/zig.vim'
 call plug#end()
 
 " General Vim configuration.
@@ -65,7 +69,16 @@ set backspace=indent,eol,start " Make backspacing work.
 set spelllang=en_ca
 set clipboard^=unnamed
 set clipboard^=unnamedplus
-colorscheme gruvbox
+
+" For Neovim 0.1.3 and 0.1.4
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
+" Or if you have Neovim >= 0.1.5
+if (has("termguicolors"))
+ set termguicolors
+endif
+
+colorscheme OceanicNext
 set pumheight=10   " Completion window max size.
 set signcolumn=yes " Keep this open since gitgutter puts stuff there.
 
@@ -75,6 +88,8 @@ let g:delimitMate_expand_space=1
 let g:delimitMate_smart_quotes=1
 let g:delimitMate_expand_inside_quotes=0
 let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
+
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
 
 " Use K to show documentation in preview window.
 "
@@ -104,6 +119,12 @@ map <C-n> :NERDTreeToggle<CR>
 map q: :q
 " Clear search highlighting after hitting escape.
 nnoremap <esc> :noh<return><esc>
+
+" Today inserts the current date.
+function Today()
+  put =strftime('%Y-%m-%d')
+endfunction
+command Today call Today()
 
 " Autocommands, most for setting indentation defaults.
 augroup file_mappings
