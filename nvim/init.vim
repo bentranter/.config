@@ -1,4 +1,4 @@
-" Terminal friendly config for neovim and vim8.
+" Terminal friendly config for neovim.
 
 " Use modern Vim.
 set nocompatible
@@ -7,31 +7,27 @@ set nocompatible
 set encoding=utf-8
 
 " Download vim-plug if it isn't installed.
-if has('nvim')
-  if empty(glob("~/.config/nvim/autoload/plug.vim"))
-    silent! execute '!curl --create-dirs -fsSLo ~/.config/nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
-    autocmd VimEnter * silent! PlugInstall --sync | source $MYVIMRC
-  endif
-else
-  if empty(glob("~/.vim/autoload/plug.vim"))
-    silent! execute '!curl --create-dirs -fsSLo ~/.vim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
-    autocmd VimEnter * silent! PlugInstall --sync | source $MYVIMRC
-  endif
+if empty(glob(stdpath('data'), '/vim-plug'))
+  silent! execute '!curl --create-dirs -fsSLo ~/.config/nvim/autoload/plug.vim https://raw.github.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * silent! PlugInstall --sync | source $MYVIMRC
 endif
 
-" Create directories for Vim plug-ins.
-call plug#begin('~/.vim/plugged')
-  Plug 'airblade/vim-gitgutter'
-  Plug 'ctrlpvim/ctrlp.vim'
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-  Plug 'mhartington/oceanic-next'
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'neomake/neomake'
-  Plug 'Raimondi/delimitMate'
-  Plug 'vim-crystal/vim-crystal'
-  Plug 'preservim/nerdtree'
-  Plug 'tpope/vim-commentary'
-  Plug 'ziglang/zig.vim'
+" Create directories for Vim plugins.
+call plug#begin(stdpath('data'), '/vim-plug')
+
+Plug 'airblade/vim-gitgutter'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'mhartington/oceanic-next'
+
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
+
+Plug 'Raimondi/delimitMate'
+Plug 'vim-crystal/vim-crystal'
+Plug 'preservim/nerdtree'
+Plug 'tpope/vim-commentary'
+
 call plug#end()
 
 " General Vim configuration.
@@ -88,18 +84,30 @@ let g:delimitMate_smart_matchpairs='^\%(\w\|\$\)'
 
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
 
-" Use K to show documentation in preview window.
-"
-" This is for COC.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+" LSP/Lua setup.
+:lua << EOF
+  local nvim_lsp = require('lspconfig')
+  local on_attach = function(_, bufnr)
+    require('completion').on_attach()
+  end
+  local servers = {'gopls'}
+  for _, lsp in ipairs(servers) do
+    nvim_lsp[lsp].setup {
+      on_attach = on_attach,
+    }
+  end
+EOF
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+" Recommended autocompletion settings for completion-nvim.
+" Use <Tab> and <S-Tab> to navigate through popup menu
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Set completeopt to have a better completion experience
+set completeopt=menuone,noinsert,noselect
+
+" Avoid showing message extra message when using completion
+set shortmess+=c
 
 let g:go_fmt_command = "goimports" " Run GoImports on save.
 let g:go_auto_type_info = 1        " Show type info for symbol under cursor.
@@ -109,9 +117,8 @@ let g:go_def_mode='godef'          " Override because gopls breaks sometimes.
 let NERDTreeShowHidden = 1         " Show dotfiles in NERDTree.
 
 " Remappings.
-"
-" Use TAB for autocompletion.
-inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+
+" Open NERDTree with ctrl-n.
 map <C-n> :NERDTreeToggle<CR>
 " Don't show stupid q: window.
 map q: :q
@@ -140,8 +147,5 @@ augroup file_mappings
 
   " Close Vim if NERDTree is the only remaining buffer.
   autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
-  " Run Neomake on save.
-  autocmd! BufWritePost * Neomake
 augroup END
 

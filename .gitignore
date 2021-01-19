@@ -12,3 +12,6 @@ stetic/*
 micro/*
 .isolated-storage/*
 doctl/*
+
+# Lol I can't believe it puts save files in this directory.
+StardewValley

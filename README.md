@@ -1,6 +1,6 @@
 # dotfiles
 
-Config for Vim8 and/or Neovim.
+Config for Neovim 0.5 or higher.
 
 <p align="center">
   <img src="screenshot.png" alt="Screenshot of terminal" title="Screenshot of terminal">
@@ -8,4 +8,9 @@ Config for Vim8 and/or Neovim.
 
 ### Installation
 
-To install these, you'll need either [Neovim](https://neovim.io/) or Vim8 installed on your machine with Python 3 support. After that, start Vim and run `:PlugInstall`.
+To install these, you'll need either [Neovim](https://neovim.io/) 0.5 prerelease installed on your machine. This can be done by running,
+
+```sh
+brew install neovim --HEAD # Installs Neovim 0.5 prerelease.
+brew install luajit --HEAD # Install the latest LuaJIT, required for Neovim to work on macOS Catalina.
+```
