@@ -24,14 +24,11 @@ call plug#begin('~/.vim/plugged')
   Plug 'airblade/vim-gitgutter'
   Plug 'ctrlpvim/ctrlp.vim'
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-  Plug 'morhetz/gruvbox'
-  Plug 'jnurmine/Zenburn'
-  Plug 'dracula/vim'
   Plug 'mhartington/oceanic-next'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'neomake/neomake'
   Plug 'Raimondi/delimitMate'
-  Plug 'rhysd/vim-crystal'
+  Plug 'vim-crystal/vim-crystal'
   Plug 'preservim/nerdtree'
   Plug 'tpope/vim-commentary'
   Plug 'ziglang/zig.vim'
@@ -107,6 +104,7 @@ endfunction
 let g:go_fmt_command = "goimports" " Run GoImports on save.
 let g:go_auto_type_info = 1        " Show type info for symbol under cursor.
 let g:go_fmt_fail_silently = 1     " Don't open the quickfix window.
+let g:go_def_mode='godef'          " Override because gopls breaks sometimes.
 
 let NERDTreeShowHidden = 1         " Show dotfiles in NERDTree.
 
@@ -131,7 +129,7 @@ augroup file_mappings
   autocmd!
 
   " Filetypes where we indent by two spaces
-  autocmd FileType html,css,js,json,viml,vim,ruby,eruby,erb setlocal expandtab shiftwidth=2 tabstop=2
+  autocmd FileType html,css,js,json,viml,vim,ruby,eruby,erb,crystal,cr,ecr setlocal expandtab shiftwidth=2 tabstop=2
   autocmd FileType c,cpp,cc,h setlocal noexpandtab tabstop=4 shiftwidth=4
 
   autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
