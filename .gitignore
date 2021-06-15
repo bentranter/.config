@@ -3,6 +3,8 @@
 nvim/autoload/*
 nvim/colors/*
 nvim/.netrwhist
+iterm2/*
+gtk-2.0/*
 yarn/*
 xbuild/*
 NuGet/*
