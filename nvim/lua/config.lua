@@ -30,8 +30,13 @@ vim.o.spelllang = "en_ca"
 vim.o.clipboard = "unnamedplus"
 
 vim.cmd "syntax on"
+vim.cmd "set cursorline"
 vim.cmd "filetype indent on"
-vim.cmd("colorscheme OceanicNext")
+vim.cmd("colorscheme nord")
+
+vim.g.lightline = {
+  colorscheme = "nord",
+}
 
 vim.api.nvim_exec([[
 augroup FileMappings
