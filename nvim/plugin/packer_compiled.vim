@@ -80,6 +80,14 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/ben/.local/share/nvim/site/pack/packer/start/gitsigns.nvim"
   },
+  ["lightline.vim"] = {
+    loaded = true,
+    path = "/Users/ben/.local/share/nvim/site/pack/packer/start/lightline.vim"
+  },
+  ["nord-vim"] = {
+    loaded = true,
+    path = "/Users/ben/.local/share/nvim/site/pack/packer/start/nord-vim"
+  },
   ["nvim-lspconfig"] = {
     loaded = true,
     path = "/Users/ben/.local/share/nvim/site/pack/packer/start/nvim-lspconfig"
@@ -87,6 +95,10 @@ _G.packer_plugins = {
   ["nvim-tree.lua"] = {
     loaded = true,
     path = "/Users/ben/.local/share/nvim/site/pack/packer/start/nvim-tree.lua"
+  },
+  ["nvim-treesitter"] = {
+    loaded = true,
+    path = "/Users/ben/.local/share/nvim/site/pack/packer/start/nvim-treesitter"
   },
   ["nvim-web-devicons"] = {
     loaded = true,

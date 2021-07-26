@@ -18,11 +18,16 @@ require("packer").startup({
         require("gitsigns").setup()
       end
     }
+    use {
+        "nvim-treesitter/nvim-treesitter",
+        run = ":TSUpdate"
+    }
     use "neovim/nvim-lspconfig"
     use "nvim-lua/completion-nvim"
+    use "arcticicestudio/nord-vim"
+    use "itchyny/lightline.vim"
   end
 })
-
 
 -- Configure nvim-tree
 --
@@ -68,6 +73,15 @@ vim.g.go_fmt_command = "goimports" -- Run GoImports on save.
 vim.g.go_auto_type_info = 1        -- Show type info for symbol under cursor.
 vim.g.go_fmt_fail_silently = 1     -- Don't open the quickfix window.
 vim.g.go_def_mode = "godef"        -- Override because gopls breaks sometimes.
+
+-- Treesitter setup.
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained",
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+}
 
 -- LSP config.
 local nvim_lsp = require("lspconfig")
