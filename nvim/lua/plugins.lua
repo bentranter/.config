@@ -7,6 +7,7 @@ require("packer").startup({
   function(use)
     use "wbthomason/packer.nvim"
     use "fatih/vim-go"
+    use "tpope/vim-commentary"
     use {
       "kyazdani42/nvim-tree.lua",
       requires = { "kyazdani42/nvim-web-devicons", opt = true }
@@ -18,14 +19,20 @@ require("packer").startup({
         require("gitsigns").setup()
       end
     }
-    use {
-        "nvim-treesitter/nvim-treesitter",
-        run = ":TSUpdate"
-    }
     use "neovim/nvim-lspconfig"
-    use "nvim-lua/completion-nvim"
+    -- Disabled for now in favour of nvim-cmp.
+    -- use "nvim-lua/completion-nvim"
     use "arcticicestudio/nord-vim"
     use "itchyny/lightline.vim"
+    use "itchyny/vim-gitbranch"
+
+    -- Snippet support for autocompletion.
+    use { "L3MON4D3/LuaSnip" }
+
+    use {
+      "hrsh7th/nvim-cmp",
+      requires = { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer" }
+    }
   end
 })
 
@@ -72,36 +79,78 @@ vim.api.nvim_set_keymap("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { silent = true
 vim.g.go_fmt_command = "goimports" -- Run GoImports on save.
 vim.g.go_auto_type_info = 1        -- Show type info for symbol under cursor.
 vim.g.go_fmt_fail_silently = 1     -- Don't open the quickfix window.
-vim.g.go_def_mode = "godef"        -- Override because gopls breaks sometimes.
 
--- Treesitter setup.
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained",
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = false,
+
+-- Setup completion.
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local luasnip = require("luasnip")
+local cmp = require("cmp")
+
+cmp.setup({
+  sources = {
+    { name = "nvim_lsp" },
+    { name = "buffer" },
   },
-}
+  mapping = {
+    -- ['<Tab>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
+    -- ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  }
+})
 
 -- LSP config.
-local nvim_lsp = require("lspconfig")
-local on_attach = function(_, bufnr)
-  require("completion").on_attach()
-end
+require("lspconfig")[ "gopls" ].setup {
+  capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+}
 
-local servers = { "gopls" }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach
-  }
-end
+-- LSP remappings.
+vim.api.nvim_set_keymap("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", {noremap = true})
 
 vim.cmd [[
   " Recommended autocompletion settings for completion-nvim.
   " Use <Tab> and <S-Tab> to navigate through popup menu
   inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
   inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-  " Avoid showing message extra message when using completion
-  set shortmess+=c
 ]]
+
+-- Random UI tweaks from a comment on Reddit.
+vim.lsp.diagnostic.show_line_diagnostics({ border = 'single' })
+
+vim.lsp.handlers["textDocument/hover"] =
+  vim.lsp.with(vim.lsp.handlers.hover, {
+    -- Use a sharp border with `FloatBorder` highlights
+    border = "single",
+  })
+
+-- Enable border for signature
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+  vim.lsp.handlers.signature_help,
+  {
+    border = "single",
+  }
+)

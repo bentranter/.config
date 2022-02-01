@@ -15,10 +15,11 @@ vim.o.showmatch = false            -- Do not show matching brackets by flickerin
 vim.o.showmode = false             -- We show the mode with airline or lightline
 vim.o.ignorecase = true            -- Search case insensitive...
 vim.o.smartcase = true             -- ... but not it begins with upper case
-vim.o.completeopt= "menuone,noinsert,noselect"
+vim.o.completeopt = "menuone,noinsert,noselect"
+vim.o.shortmess = vim.o.shortmess .. "c" -- Show fewer autocomplete messages.
 vim.o.cursorcolumn = false         -- Speed up syntax highlighting
 vim.o.cursorline = false
-vim.o.updatetime = 400
+vim.o.updatetime = 750
 vim.o.wrap = true                  -- Turn on line wrapping.
 vim.o.scrolloff = 5                -- Show 5 lines of context around the cursor.
 vim.o.title = true                 -- Set the window title...
@@ -31,10 +32,16 @@ vim.o.clipboard = "unnamedplus"
 
 vim.cmd "syntax on"
 vim.cmd "set cursorline"
-vim.cmd "filetype indent on"
+vim.cmd "filetype plugin indent on"
 vim.cmd("colorscheme nord")
 
 vim.g.lightline = {
+  active = {
+    left = {{"mode", "paste"}, {"gitbranch", "readonly", "filename", "modified"}},
+  },
+  component_function = {
+    gitbranch = "gitbranch#name",
+  },
   colorscheme = "nord",
 }
 
