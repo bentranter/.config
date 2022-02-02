@@ -1,3 +1,6 @@
+-- Map leader.
+vim.g.mapleader = " "
+
 -- General configuration.
 vim.o.termguicolors = true     -- Use 256 colours.
 vim.o.autoread = true          -- Automatically re-read changed files without confirmation prompt.

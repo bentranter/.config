@@ -124,6 +124,10 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/ben/.local/share/nvim/site/pack/packer/start/plenary.nvim"
   },
+  ["telescope.nvim"] = {
+    loaded = true,
+    path = "/Users/ben/.local/share/nvim/site/pack/packer/start/telescope.nvim"
+  },
   ["vim-commentary"] = {
     loaded = true,
     path = "/Users/ben/.local/share/nvim/site/pack/packer/start/vim-commentary"

@@ -26,6 +26,12 @@ require("packer").startup({
     use "itchyny/lightline.vim"
     use "itchyny/vim-gitbranch"
 
+    use "nvim-treesitter/nvim-treesitter"
+    use {
+      "nvim-telescope/telescope.nvim",
+      requires = { {"nvim-lua/plenary.nvim"} }
+    }
+
     -- Snippet support for autocompletion.
     use { "L3MON4D3/LuaSnip" }
 
@@ -35,6 +41,18 @@ require("packer").startup({
     }
   end
 })
+
+-- Configure Telescope.
+--
+-- Normal file pickers.
+vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fv", "<cmd>lua require('telescope.builtin').git_files()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<CR>", {noremap = true})
+-- LSP file pickers.
+vim.api.nvim_set_keymap("n", "<leader>fld", "<cmd>lua require('telescope.builtin').diagnostics()<CR>", {noremap = true})
+
 
 -- Configure nvim-tree
 --
@@ -123,9 +141,11 @@ cmp.setup({
 })
 
 -- LSP config.
-require("lspconfig")[ "gopls" ].setup {
+require("lspconfig")["gopls"].setup {
   capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 }
+require("lspconfig")["solargraph"].setup{}
+require("lspconfig")["tailwindcss"].setup{}
 
 -- LSP remappings.
 vim.api.nvim_set_keymap("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", {noremap = true})
