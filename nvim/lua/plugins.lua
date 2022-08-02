@@ -20,8 +20,6 @@ require("packer").startup({
       end
     }
     use "neovim/nvim-lspconfig"
-    -- Disabled for now in favour of nvim-cmp.
-    -- use "nvim-lua/completion-nvim"
     use "arcticicestudio/nord-vim"
     use "itchyny/lightline.vim"
     use "itchyny/vim-gitbranch"
@@ -31,10 +29,11 @@ require("packer").startup({
       "nvim-telescope/telescope.nvim",
       requires = { {"nvim-lua/plenary.nvim"} }
     }
-
     -- Snippet support for autocompletion.
-    use { "L3MON4D3/LuaSnip" }
-
+    use {
+      "hrsh7th/cmp-vsnip",
+      requires = { "hrsh7th/vim-vsnip" }
+    }
     use {
       "hrsh7th/nvim-cmp",
       requires = { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer" }
@@ -82,11 +81,14 @@ vim.g.nvim_tree_icons = {
     untracked = "*",
     deleted = "×",
     ignored = "◌"
+  },
+  hijack_directories = {
+    enable = true,
+    auto_open = true
   }
 }
 vim.g.nvim_tree_indent_markers = 1 -- Show icons beside folders.
-vim.g.nvim_tree_auto_open = 1      -- Open the tree from "vim ."
-vim.g.nvim_tree_auto_close = 1     -- Close the tree when it's the last window.
+-- vim.g.nvim_tree_auto_open = 1      -- Open the tree from "vim ."
 vim.g.nvim_tree_width = 22         -- Make the tree narrower.
 
 -- Toggle nvim-tree with C-n in normal mode.
@@ -99,45 +101,56 @@ vim.g.go_auto_type_info = 1        -- Show type info for symbol under cursor.
 vim.g.go_fmt_fail_silently = 1     -- Don't open the quickfix window.
 
 
--- Setup completion.
+-- Setup autocompletion and snippet insertion.
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local luasnip = require("luasnip")
+local feedkey = function(key, mode)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+end
+
 local cmp = require("cmp")
 
 cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end
+  },
   sources = {
     { name = "nvim_lsp" },
+    { name = "vsnip" },
     { name = "buffer" },
   },
-  mapping = {
-    -- ['<Tab>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
-    -- ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  mapping = cmp.mapping.preset.insert({
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
         cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
+      elseif vim.fn["vsnip#available"](1) == 1 then
+        feedkey("<Plug>(vsnip-expand-or-jump)", "")
       elseif has_words_before() then
         cmp.complete()
       else
-        fallback()
+        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
       end
     end, { "i", "s" }),
 
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
+    ["<S-Tab>"] = cmp.mapping(function()
       if cmp.visible() then
         cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
+      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+        feedkey("<Plug>(vsnip-jump-prev)", "")
       end
     end, { "i", "s" }),
-  }
+
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+  })
 })
 
 -- LSP config.
@@ -157,9 +170,6 @@ vim.cmd [[
   inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
   inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 ]]
-
--- Random UI tweaks from a comment on Reddit.
-vim.lsp.diagnostic.show_line_diagnostics({ border = 'single' })
 
 vim.lsp.handlers["textDocument/hover"] =
   vim.lsp.with(vim.lsp.handlers.hover, {
