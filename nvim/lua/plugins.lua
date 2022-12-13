@@ -23,6 +23,7 @@ require("packer").startup({
     use "arcticicestudio/nord-vim"
     use "itchyny/lightline.vim"
     use "itchyny/vim-gitbranch"
+    use "tmsvg/pear-tree"
 
     use "nvim-treesitter/nvim-treesitter"
     use {
@@ -88,7 +89,6 @@ vim.g.nvim_tree_icons = {
   }
 }
 vim.g.nvim_tree_indent_markers = 1 -- Show icons beside folders.
--- vim.g.nvim_tree_auto_open = 1      -- Open the tree from "vim ."
 vim.g.nvim_tree_width = 22         -- Make the tree narrower.
 
 -- Toggle nvim-tree with C-n in normal mode.
@@ -119,11 +119,6 @@ cmp.setup({
       vim.fn["vsnip#anonymous"](args.body)
     end
   },
-  sources = {
-    { name = "nvim_lsp" },
-    { name = "vsnip" },
-    { name = "buffer" },
-  },
   mapping = cmp.mapping.preset.insert({
     ["<Tab>"] = cmp.mapping(function(fallback)
       if cmp.visible() then
@@ -149,7 +144,19 @@ cmp.setup({
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete(),
     ['<C-e>'] = cmp.mapping.abort(),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Insert }),
+  }),
+
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp_signature_help' },
+  }, {
+    { name = 'path' },
+  }, {
+    { name = 'nvim_lsp' },
+  }, {
+    { name = 'vsnip' },
+  }, {
+    { name = 'buffer' },
   })
 })
 
