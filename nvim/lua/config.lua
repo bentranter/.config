@@ -36,7 +36,7 @@ vim.o.clipboard = "unnamedplus"
 vim.cmd "syntax on"
 vim.cmd "set cursorline"
 vim.cmd "filetype plugin indent on"
-vim.cmd("colorscheme nord")
+vim.cmd("colorscheme catppuccin_macchiato")
 
 vim.g.lightline = {
   active = {
@@ -45,7 +45,7 @@ vim.g.lightline = {
   component_function = {
     gitbranch = "gitbranch#name",
   },
-  colorscheme = "nord",
+  colorscheme = "catppuccin_macchiato",
 }
 
 vim.api.nvim_exec([[
