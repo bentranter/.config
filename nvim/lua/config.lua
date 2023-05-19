@@ -38,19 +38,27 @@ vim.cmd "set cursorline"
 vim.cmd "filetype plugin indent on"
 vim.cmd("colorscheme catppuccin_macchiato")
 
+-- Register nomodoro's status command as a function in the global Vim context,
+-- so that lightline has access to it.
+local nomoStatusLine = require('nomodoro').status
+vim.g.NomoStatusLine = function ()
+  return nomoStatusLine()
+end
+
 vim.g.lightline = {
   active = {
     left = {{"mode", "paste"}, {"gitbranch", "readonly", "filename", "modified"}},
   },
   component_function = {
     gitbranch = "gitbranch#name",
+    filetype = "NomoStatusLine"
   },
   colorscheme = "catppuccin_macchiato",
 }
 
 vim.api.nvim_exec([[
 augroup FileMappings
-  autocmd!
+ autocmd!
 
   autocmd FileType html,css,js,json,lua,viml,vim,ruby,eruby,erb,crystal,cr,ecr setlocal expandtab shiftwidth=2 tabstop=2
   autocmd FileType c,cpp,cc,h setlocal noexpandtab tabstop=4 shiftwidth=4

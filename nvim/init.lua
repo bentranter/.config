@@ -1,5 +1,6 @@
 vim.g.mapleader = " " -- Space is the mapleader.
 vim.keymap.set("n", "<leader>fe", vim.cmd.Ex) -- Type Space-p-v to open netrw.
+vim.keymap.set("n", "<leader><Space>", ":noh<CR>") -- Hit space twice to clear search highlighting.
 
 require("config")
 require("pack")

@@ -20,6 +20,8 @@ require("packer").startup({
     use "catppuccin/vim"
     use "itchyny/lightline.vim"
     use "itchyny/vim-gitbranch"
+
+    use "dbinagi/nomodoro"
     -- Seems like TreeSitter isn't compatible with the version of Neovim that
     -- I'm stuck on, so disable it for now.
     --
@@ -108,3 +110,6 @@ cmp.setup({
     ['<S-Tab>'] = cmp_action.luasnip_shift_supertab(),
   }
 })
+
+-- Load Nomodoro with a default config.
+require('nomodoro').setup({})
