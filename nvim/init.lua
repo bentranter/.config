@@ -157,25 +157,27 @@ vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>lua require('telescope.builtin'
 vim.api.nvim_set_keymap("n", "<leader>fld", "<cmd>lua require('telescope.builtin').diagnostics()<CR>", {noremap = true})
 
 -- Configure vim-go
-vim.g.go_fmt_command = "goimports" -- Run GoImports on save.
-vim.g.go_auto_type_info = 1        -- Show type info for symbol under cursor.
-vim.g.go_fmt_fail_silently = 1     -- Don't open the quickfix window.
+vim.g.go_fmt_command = "goimports"   -- Run GoImports on save.
+vim.g.go_auto_type_info = 0          -- Handled by nvim-lsp.
+vim.g.go_fmt_fail_silently = 1       -- Don't open the quickfix window.
+vim.g.go_gopls_enabled = 0           -- Handled by nvim-lsp.
+vim.g.go_code_completion_enabled = 0 -- Handled by nvim-lsp.
+vim.g.go_list_type = 'quickfix'
 
 -- Configure LSP zero.
 --
 --
 local lsp = require('lsp-zero').preset({})
 
-lsp.on_attach(function(client, bufnr)
+lsp.on_attach(function(_, bufnr)
   lsp.default_keymaps({buffer = bufnr})
-
   vim.keymap.set('n', 'gh', '<cmd>lua vim.lsp.buf.hover()<cr>', {buffer = true})
+  vim.keymap.set('n', 'gd', "<cmd>lua vim.lsp.buf.definition()<CR>", {buffer = true})
 end)
 
 -- When you don't have mason.nvim installed
 -- You'll need to list the servers installed in your system
 lsp.setup_servers({'gopls'})
-
 lsp.ensure_installed({'tailwindcss'})
 
 -- Setup Tailwind LSP.
@@ -183,6 +185,51 @@ require('lspconfig').tailwindcss.setup{}
 
 -- (Optional) Configure lua language server for neovim
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+-- Setup gopls LSP.
+require("lspconfig").gopls.setup({
+  capabilities = capabilities,
+  flags = { debounce_text_changes = 200 },
+  settings = {
+    gopls = {
+      usePlaceholders = true,
+      gofumpt = true,
+      analyses = {
+        nilness = true,
+        unusedparams = true,
+        unusedwrite = true,
+        useany = true,
+      },
+      codelenses = {
+        gc_details = false,
+        generate = true,
+        regenerate_cgo = true,
+        run_govulncheck = true,
+        test = true,
+        tidy = true,
+        upgrade_dependency = true,
+        vendor = true,
+      },
+      experimentalPostfixCompletions = true,
+      completeUnimported = true,
+      staticcheck = true,
+      directoryFilters = { "-.git", "-node_modules" },
+      semanticTokens = true,
+      hints = {
+        assignVariableTypes = true,
+        compositeLiteralFields = true,
+        compositeLiteralTypes = true,
+        constantValues = true,
+        functionTypeParameters = true,
+        parameterNames = true,
+        rangeVariableTypes = true,
+      },
+    },
+  },
+})
 
 lsp.setup()
 
