@@ -4,9 +4,204 @@ vim.g.mapleader = " " -- Space is the mapleader.
 vim.keymap.set("n", "<leader>fe", vim.cmd.Ex) -- Type Space-p-v to open netrw.
 vim.keymap.set("n", "<leader><Space>", ":noh<CR>") -- Hit space twice to clear search highlighting.
 
-require("config")
-require("pack")
-require("plugins")
+-- General configuration.
+vim.o.termguicolors = true     -- Use 256 colours.
+vim.o.autoread = true          -- Automatically re-read changed files without confirmation prompt.
+vim.o.errorbells = false       -- No beeps.
+vim.o.number = true            -- Show line numbers
+vim.o.showcmd = true           -- Show me what I'm typing
+vim.o.swapfile = false         -- Don't use swapfile
+vim.o.backup = false           -- Don't create annoying backup files
+vim.o.splitright = true        -- Split vertical windows right to the current windows
+vim.o.splitbelow = true        -- Split horizontal windows below to the current windows
+vim.o.autowrite = true         -- Automatically save before :next, :make etc.
+vim.o.hidden = true
+vim.o.fileformats = "unix,dos,mac" -- Prefer Unix over Windows over OS 9 formats
+vim.o.showmatch = false            -- Do not show matching brackets by flickering
+vim.o.showmode = false             -- We show the mode with airline or lightline
+vim.o.ignorecase = true            -- Search case insensitive...
+vim.o.smartcase = true             -- ... but not it begins with upper case
+vim.o.completeopt = "menuone,noinsert,noselect"
+vim.o.shortmess = vim.o.shortmess .. "c" -- Show fewer autocomplete messages.
+vim.o.cursorcolumn = false         -- Speed up syntax highlighting
+vim.o.cursorline = false
+vim.o.updatetime = 750
+vim.o.wrap = true                  -- Turn on line wrapping.
+vim.o.scrolloff = 5                -- Show 5 lines of context around the cursor.
+vim.o.title = true                 -- Set the window title...
+vim.o.titlestring = "%<%F%=%l/%L - nvim" -- ... to this.
+vim.o.backspace = "indent,eol,start" -- Make backspacing work.
+vim.o.pumheight = 10                 -- Completion window max size.
+vim.o.signcolumn = "yes"             -- Keep this open since gitgutter puts stuff there.
+vim.o.spelllang = "en_ca"
+vim.o.clipboard = "unnamedplus"
+
+vim.cmd "syntax on"
+vim.cmd "set cursorline"
+vim.cmd "filetype plugin indent on"
+vim.cmd("colorscheme catppuccin_macchiato")
+
+-- Register nomodoro's status command as a function in the global Vim context,
+-- so that lightline has access to it.
+local nomoStatusLine = require('nomodoro').status
+vim.g.NomoStatusLine = function ()
+  return nomoStatusLine()
+end
+
+vim.g.lightline = {
+  active = {
+    left = {{"mode", "paste"}, {"gitbranch", "readonly", "filename", "modified"}},
+  },
+  component_function = {
+    gitbranch = "gitbranch#name",
+    filetype = "NomoStatusLine"
+  },
+  colorscheme = "catppuccin_macchiato",
+}
+
+vim.api.nvim_exec([[
+augroup FileMappings
+ autocmd!
+
+  autocmd FileType html,css,js,json,lua,viml,vim,ruby,eruby,erb,crystal,cr,ecr setlocal expandtab shiftwidth=2 tabstop=2
+  autocmd FileType c,cpp,cc,h setlocal noexpandtab tabstop=4 shiftwidth=4
+
+  autocmd BufNewFile,BufRead *.go setlocal noexpandtab tabstop=4 shiftwidth=4
+
+  autocmd FileType qf wincmd J
+
+  autocmd BufWritePre * :%s/\s\+$//e
+augroup END
+]], true)
+
+-- Packer
+--
+-- Bootstraps Packer if it's not installed.
+local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+
+-- If the install path is empty, clone the Packer repo into it, then attempt
+-- to add packer itself via the packadd install command.
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+  vim.api.nvim_command("!git clone https://github.com/wbthomason/packer.nvim " .. install_path)
+  vim.api.nvim_command("packadd packer.nvim")
+end
+
+-- Plugins.
+--
+-- Don't load this file until after "packer.lua" is loaded, as that file
+-- bootstraps packer to load plugins.
+
+require("packer").startup({
+  function(use)
+    use "wbthomason/packer.nvim"
+    use "fatih/vim-go"
+    use "tpope/vim-commentary"
+    use "Raimondi/delimitMate"
+    use {
+      "lewis6991/gitsigns.nvim",
+      requires = { "nvim-lua/plenary.nvim" },
+      config = function()
+        require("gitsigns").setup()
+      end
+    }
+    use "arcticicestudio/nord-vim"
+    use "catppuccin/vim"
+    use "itchyny/lightline.vim"
+    use "itchyny/vim-gitbranch"
+
+    use "dbinagi/nomodoro"
+    -- Seems like TreeSitter isn't compatible with the version of Neovim that
+    -- I'm stuck on, so disable it for now.
+    --
+    -- use {
+    --   "nvim-treesitter/nvim-treesitter",
+    --   { run = ":TSUpdate" },
+    -- }
+    use {
+      "nvim-telescope/telescope.nvim",
+      requires = { {"nvim-lua/plenary.nvim"} }
+    }
+    -- use { "neoclide/coc.nvim", branch = "release" }
+    use {
+      'VonHeikemen/lsp-zero.nvim',
+      branch = 'v2.x',
+      requires = {
+        -- LSP Support
+        {'neovim/nvim-lspconfig'},             -- Required
+        {                                      -- Optional
+          'williamboman/mason.nvim',
+          run = function()
+            pcall(vim.cmd, 'MasonUpdate')
+          end,
+        },
+        {'williamboman/mason-lspconfig.nvim'}, -- Optional
+
+        -- Autocompletion
+        {'hrsh7th/nvim-cmp'},     -- Required
+        {'hrsh7th/cmp-nvim-lsp'}, -- Required
+        {'L3MON4D3/LuaSnip'},     -- Required
+      }
+    }
+  end
+})
+
+-- Configure Telescope.
+--
+-- Normal file pickers.
+vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fv", "<cmd>lua require('telescope.builtin').git_files()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<CR>", {noremap = true})
+-- LSP file pickers.
+vim.api.nvim_set_keymap("n", "<leader>fld", "<cmd>lua require('telescope.builtin').diagnostics()<CR>", {noremap = true})
+
+-- Configure vim-go
+vim.g.go_fmt_command = "goimports" -- Run GoImports on save.
+vim.g.go_auto_type_info = 1        -- Show type info for symbol under cursor.
+vim.g.go_fmt_fail_silently = 1     -- Don't open the quickfix window.
+
+-- Configure LSP zero.
+--
+--
+local lsp = require('lsp-zero').preset({})
+
+lsp.on_attach(function(client, bufnr)
+  lsp.default_keymaps({buffer = bufnr})
+
+  vim.keymap.set('n', 'gh', '<cmd>lua vim.lsp.buf.hover()<cr>', {buffer = true})
+end)
+
+-- When you don't have mason.nvim installed
+-- You'll need to list the servers installed in your system
+lsp.setup_servers({'gopls'})
+
+lsp.ensure_installed({'tailwindcss'})
+
+-- Setup Tailwind LSP.
+require('lspconfig').tailwindcss.setup{}
+
+-- (Optional) Configure lua language server for neovim
+require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
+
+lsp.setup()
+
+-- Enable "supertab" for Neovim.
+--
+-- Make sure you setup `cmp` after lsp-zero
+local cmp = require('cmp')
+local cmp_action = require('lsp-zero').cmp_action()
+
+cmp.setup({
+  mapping = {
+    ['<Tab>'] = cmp_action.luasnip_supertab(),
+    ['<S-Tab>'] = cmp_action.luasnip_shift_supertab(),
+    ['<CR>'] = cmp.mapping.confirm({select = true})
+  }
+})
+
+-- Load Nomodoro with a default config.
+require('nomodoro').setup({})
 
 -- Experiments below.
 -- Some servers have issues with backup files, see #649.
