@@ -196,8 +196,8 @@ end)
 
 -- When you don't have mason.nvim installed
 -- You'll need to list the servers installed in your system
-lsp.setup_servers({'gopls'})
-lsp.ensure_installed({'tailwindcss'})
+lsp.setup_servers({'gopls', 'tsserver'})
+lsp.ensure_installed({'tailwindcss', 'tsserver'})
 
 -- Setup Tailwind LSP.
 require('lspconfig').tailwindcss.setup{}
@@ -207,6 +207,16 @@ require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+-- Setup TSServer.
+require('lspconfig').tsserver.setup({
+  capabilities = capabilities,
+  settings = {
+    completions = {
+      completeFunctionCalls = true
+    }
+  }
+})
 
 -- Setup gopls LSP.
 require("lspconfig").gopls.setup({
