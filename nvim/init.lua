@@ -1,4 +1,14 @@
--- TODO Consider switching to https://github.com/fatih/dotfiles/blob/main/init.lua.
+-- Packer
+--
+-- Bootstraps Packer if it's not installed.
+local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+
+-- If the install path is empty, clone the Packer repo into it, then attempt
+-- to add packer itself via the packadd install command.
+if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+  vim.api.nvim_command("!git clone https://github.com/wbthomason/packer.nvim " .. install_path)
+  vim.api.nvim_command("packadd packer.nvim")
+end
 
 vim.g.mapleader = " " -- Space is the mapleader.
 vim.keymap.set("n", "<leader>fe", vim.cmd.Ex) -- Type Space-p-v to open netrw.
@@ -74,18 +84,6 @@ augroup FileMappings
 augroup END
 ]], true)
 
--- Packer
---
--- Bootstraps Packer if it's not installed.
-local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-
--- If the install path is empty, clone the Packer repo into it, then attempt
--- to add packer itself via the packadd install command.
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-  vim.api.nvim_command("!git clone https://github.com/wbthomason/packer.nvim " .. install_path)
-  vim.api.nvim_command("packadd packer.nvim")
-end
-
 -- Plugins.
 --
 -- Don't load this file until after "packer.lua" is loaded, as that file
@@ -104,19 +102,40 @@ require("packer").startup({
         require("gitsigns").setup()
       end
     }
-    use "arcticicestudio/nord-vim"
-    use "catppuccin/vim"
+    use {
+      "catppuccin/vim",
+      config = function()
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          treesitter = true,
+        }
+      end
+    }
     use "itchyny/lightline.vim"
     use "itchyny/vim-gitbranch"
 
     use "dbinagi/nomodoro"
-    -- Seems like TreeSitter isn't compatible with the version of Neovim that
-    -- I'm stuck on, so disable it for now.
-    --
-    -- use {
-    --   "nvim-treesitter/nvim-treesitter",
-    --   { run = ":TSUpdate" },
-    -- }
+    use {
+      "nvim-treesitter/nvim-treesitter",
+      { run = ":TSUpdate" },
+      config = function ()
+        require'nvim-treesitter.configs'.setup {
+          ensure_installed = {
+            'go',
+    	    'lua',
+	    'markdown',
+          },
+          indent = { enable = true },
+          highlight = { enable = true },
+          autopairs = { enable = true },
+        }
+      end
+    }
+    use {
+      "windwp/nvim-autopairs",
+      config = function() require("nvim-autopairs").setup { check_ts = true } end
+    }
     use {
       "nvim-telescope/telescope.nvim",
       requires = { {"nvim-lua/plenary.nvim"} }
@@ -217,7 +236,7 @@ require("lspconfig").gopls.setup({
       completeUnimported = true,
       staticcheck = true,
       directoryFilters = { "-.git", "-node_modules" },
-      semanticTokens = true,
+      semanticTokens = false, -- This is insanely slow.
       hints = {
         assignVariableTypes = true,
         compositeLiteralFields = true,
@@ -262,4 +281,3 @@ vim.opt.updatetime = 300
 -- Always show the signcolumn, otherwise it would shift the text each time
 -- diagnostics appear/become resolved.
 vim.opt.signcolumn = "yes"
-
