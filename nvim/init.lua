@@ -45,6 +45,11 @@ vim.o.pumheight = 10                 -- Completion window max size.
 vim.o.signcolumn = "yes"             -- Keep this open since gitgutter puts stuff there.
 vim.o.spelllang = "en_ca"
 vim.o.clipboard = "unnamedplus"
+vim.o.tabstop = 2
+vim.o.softtabstop = 2
+vim.o.shiftwidth = 2
+vim.o.expandtab = true
+vim.o.smartindent = false
 
 vim.cmd "syntax on"
 vim.cmd "set cursorline"
@@ -123,8 +128,9 @@ require("packer").startup({
         require'nvim-treesitter.configs'.setup {
           ensure_installed = {
             'go',
-    	    'lua',
-	    'markdown',
+            'lua',
+            'markdown',
+            'javascript'
           },
           indent = { enable = true },
           highlight = { enable = true },
@@ -140,7 +146,6 @@ require("packer").startup({
       "nvim-telescope/telescope.nvim",
       requires = { {"nvim-lua/plenary.nvim"} }
     }
-    -- use { "neoclide/coc.nvim", branch = "release" }
     use {
       'VonHeikemen/lsp-zero.nvim',
       branch = 'v2.x',
