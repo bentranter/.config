@@ -42,7 +42,7 @@ vim.o.title = true                 -- Set the window title...
 vim.o.titlestring = "%<%F%=%l/%L - nvim" -- ... to this.
 vim.o.backspace = "indent,eol,start" -- Make backspacing work.
 vim.o.pumheight = 10                 -- Completion window max size.
-vim.o.signcolumn = "yes"             -- Keep this open since gitgutter puts stuff there.
+vim.o.signcolumn = "yes"           -- Keep this open since gitgutter puts stuff there.
 vim.o.spelllang = "en_ca"
 vim.o.clipboard = "unnamedplus"
 vim.o.tabstop = 2
@@ -53,8 +53,9 @@ vim.o.smartindent = false
 
 vim.cmd "syntax on"
 vim.cmd "set cursorline"
+vim.cmd "set relativenumber"
 vim.cmd "filetype plugin indent on"
-vim.cmd("colorscheme catppuccin_macchiato")
+vim.cmd "colorscheme oceanicnext"
 
 -- Register nomodoro's status command as a function in the global Vim context,
 -- so that lightline has access to it.
@@ -71,7 +72,7 @@ vim.g.lightline = {
     gitbranch = "gitbranch#name",
     filetype = "NomoStatusLine"
   },
-  colorscheme = "catppuccin_macchiato",
+  colorscheme = "nord",
 }
 
 vim.api.nvim_exec([[
@@ -170,15 +171,13 @@ require("packer").startup({
 })
 
 -- Configure Telescope.
---
--- Normal file pickers.
 vim.api.nvim_set_keymap("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>fv", "<cmd>lua require('telescope.builtin').git_files()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<CR>", {noremap = true})
--- LSP file pickers.
-vim.api.nvim_set_keymap("n", "<leader>fld", "<cmd>lua require('telescope.builtin').diagnostics()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fs", "<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<CR>", {noremap = true})
 
 -- Configure vim-go
 vim.g.go_fmt_command = "goimports"   -- Run GoImports on save.
@@ -296,3 +295,9 @@ vim.opt.updatetime = 300
 -- Always show the signcolumn, otherwise it would shift the text each time
 -- diagnostics appear/become resolved.
 vim.opt.signcolumn = "yes"
+
+-- <Space> gtf runs GoTestFunc.
+vim.keymap.set("n", "<leader>gtf", ":GoTestFunc<CR>")
+-- <Space> gen jumps to the next LSP error ("go error next").
+vim.api.nvim_set_keymap("n", "<leader>gen", "<cmd>lua vim.diagnostic.goto_next()<CR>", {noremap = true})
+vim.api.nvim_set_keymap("n", "<leader>gep", "<cmd>lua vim.diagnostic.goto_prev()<CR>", {noremap = true})
