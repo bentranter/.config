@@ -57,13 +57,6 @@ vim.cmd "set relativenumber"
 vim.cmd "filetype plugin indent on"
 vim.cmd "colorscheme oceanicnext"
 
--- Register nomodoro's status command as a function in the global Vim context,
--- so that lightline has access to it.
-local nomoStatusLine = require('nomodoro').status
-vim.g.NomoStatusLine = function ()
-  return nomoStatusLine()
-end
-
 vim.g.lightline = {
   active = {
     left = {{"mode", "paste"}, {"gitbranch", "readonly", "filename", "modified"}},
@@ -98,6 +91,7 @@ augroup END
 require("packer").startup({
   function(use)
     use "wbthomason/packer.nvim"
+    use "folke/tokyonight.nvim"
     use "fatih/vim-go"
     use "tpope/vim-commentary"
     use "Raimondi/delimitMate"
@@ -120,8 +114,6 @@ require("packer").startup({
     }
     use "itchyny/lightline.vim"
     use "itchyny/vim-gitbranch"
-
-    use "dbinagi/nomodoro"
     use {
       "nvim-treesitter/nvim-treesitter",
       { run = ":TSUpdate" },
@@ -167,6 +159,13 @@ require("packer").startup({
         {'L3MON4D3/LuaSnip'},     -- Required
       }
     }
+    use {
+      'romgrk/barbar.nvim',
+      requires = {
+        'lewis6991/gitsigns.nvim',
+        'nvim-tree/nvim-web-devicons'
+      }
+    }
   end
 })
 
@@ -178,6 +177,20 @@ vim.api.nvim_set_keymap("n", "<leader>fv", "<cmd>lua require('telescope.builtin'
 vim.api.nvim_set_keymap("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>fs", "<cmd>lua require('telescope.builtin').lsp_document_symbols()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<CR>", {noremap = true})
+
+-- Configure Barbar.
+vim.api.nvim_set_keymap("n", "<leader>bn", "<cmd>BufferNext<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>bp", "<cmd>BufferPrevious<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b1", "<cmd>BufferGoto 1<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b2", "<cmd>BufferGoto 2<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b3", "<cmd>BufferGoto 3<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b4", "<cmd>BufferGoto 4<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b5", "<cmd>BufferGoto 5<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b6", "<cmd>BufferGoto 6<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b7", "<cmd>BufferGoto 7<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b8", "<cmd>BufferGoto 8<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b9", "<cmd>BufferGoto 9<CR>", {noremap=true,silent=true})
+vim.api.nvim_set_keymap("n", "<leader>b0", "<cmd>BufferLast<CR>", {noremap=true,silent=true})
 
 -- Configure vim-go
 vim.g.go_fmt_command = "goimports"   -- Run GoImports on save.
@@ -280,9 +293,6 @@ cmp.setup({
   }
 })
 
--- Load Nomodoro with a default config.
-require('nomodoro').setup({})
-
 -- Experiments below.
 -- Some servers have issues with backup files, see #649.
 vim.opt.backup = false
@@ -301,3 +311,6 @@ vim.keymap.set("n", "<leader>gtf", ":GoTestFunc<CR>")
 -- <Space> gen jumps to the next LSP error ("go error next").
 vim.api.nvim_set_keymap("n", "<leader>gen", "<cmd>lua vim.diagnostic.goto_next()<CR>", {noremap = true})
 vim.api.nvim_set_keymap("n", "<leader>gep", "<cmd>lua vim.diagnostic.goto_prev()<CR>", {noremap = true})
+-- Center the cursor on the screen when navigating up and down.
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
